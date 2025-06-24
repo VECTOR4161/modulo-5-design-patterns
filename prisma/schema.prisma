@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.db"
+}
+
+model Producto {
+  id           Int                  @id @default(autoincrement())
+  nombre       String
+  stock        Int
+  precio       Float
+  presentacion String
+  activo       Boolean
+  DetalleVenta DetalleVenta[]
+  DetalleRebastecimiento DetalleRebastecimiento[]
+}
+
+model Venta {
+  id         Int            @id @default(autoincrement())
+  fecha      DateTime
+  total      Float
+  id_usuario Int
+  id_cliente Int
+  activo     Boolean
+
+  usuario    Usuario        @relation("VentaUsuario", fields: [id_usuario], references: [id])
+  cliente    Usuario        @relation("VentaCliente", fields: [id_cliente], references: [id])
+  DetalleVenta DetalleVenta[]
+}
+
+model DetalleVenta {
+  id          Int      @id @default(autoincrement())
+  submonto    Float
+  cantidad    Int
+  id_venta    Int
+  id_producto Int
+  activo      Boolean
+
+  venta       Venta    @relation(fields: [id_venta], references: [id])
+  producto    Producto @relation(fields: [id_producto], references: [id])
+}
+
+model Rebastecimiento {
+  id            Int                      @id @default(autoincrement())
+  fecha         DateTime
+  total         Float
+  id_usuario    Int
+  id_proveedor  Int
+  activo        Boolean
+
+  usuario       Usuario                  @relation("RebastecimientoUsuario", fields: [id_usuario], references: [id])
+  proveedor     Usuario                  @relation("RebastecimientoProveedor", fields: [id_proveedor], references: [id])
+  DetalleRebastecimiento DetalleRebastecimiento[]
+}
+
+model DetalleRebastecimiento {
+  id                   Int       @id @default(autoincrement())
+  cantidad             Int
+  subtotal             Float
+  fecha_vencimiento    DateTime
+  id_reabastecimiento  Int
+  id_producto          Int
+  activo               Boolean
+
+  rebastecimiento      Rebastecimiento @relation(fields: [id_reabastecimiento], references: [id])
+  producto             Producto        @relation(fields: [id_producto], references: [id])
+}
+
+model Rol {
+  id       Int       @id @default(autoincrement())
+  nombre   String
+  activo   Boolean
+  usuarios Usuario[]
+}
+
+model Usuario {
+  id                Int                  @id @default(autoincrement())
+  nombre            String
+  apellidos         String
+  id_rol            Int
+  activo            Boolean
+
+  rol               Rol                  @relation(fields: [id_rol], references: [id])
+  ventasUsuario     Venta[]              @relation("VentaUsuario")
+  ventasCliente     Venta[]              @relation("VentaCliente")
+  rebastecimientos  Rebastecimiento[]    @relation("RebastecimientoUsuario")
+  proveedores       Rebastecimiento[]    @relation("RebastecimientoProveedor")
+}
