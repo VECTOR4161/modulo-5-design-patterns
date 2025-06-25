@@ -3,7 +3,7 @@ import { UsuarioDatasourceImplPrisma, UsuarioRepositoryImpl } from "../../infras
 import { UsuarioController } from "./controller"
 
 
-export class CategoriaRoutes{
+export class UsuarioRoutes{
     static get routes(): Router{
 
         const router = Router()
