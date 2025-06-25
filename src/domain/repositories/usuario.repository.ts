@@ -6,11 +6,11 @@ export abstract class UsuarioRepository{
     
     abstract insertarUsuario(registrarUsuarioDto: RegistrarUsuarioDto): Promise<Usuario>
 
-    abstract obtenerUsuarios(): Promise<ListaOrdenada<Usuario>>
+    abstract obtenerUsuarios(inicio: number, filas: number): Promise<ListaOrdenada<Usuario>>
 
-    abstract obtenerUsuario(id: string): Promise<Usuario> 
+    abstract obtenerUsuario(id: number): Promise<Usuario> 
 
-    abstract actualizarUsuario(id: string, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario>
+    abstract actualizarUsuario(id: number, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario>
 
-    abstract eliminarUsuario(id: string): Promise<boolean>
+    abstract eliminarUsuario(id: number): Promise<boolean>
 }
