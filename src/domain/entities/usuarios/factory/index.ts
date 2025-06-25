@@ -8,3 +8,5 @@ export * from './concreteFactory/usuarioWebFactory'
 export * from './concreteProducts/cliente'
 export * from './concreteProducts/proveedor'
 export * from './concreteProducts/usuarioWeb'
+
+export * from './creadorDeUsuarios'

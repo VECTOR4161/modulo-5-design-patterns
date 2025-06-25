@@ -1,5 +1,5 @@
-import { PrismaAdapter } from "../../../config";
-import { ActualizarUsuarioDto, RegistrarUsuarioDto, Usuario, UsuarioDatasource, UsuarioWebFactory } from "../../../domain";
+import { CustomError, filtradorDeObjetos, PrismaAdapter } from "../../../config";
+import { ActualizarUsuarioDto, CreadorDeUsuarios, RegistrarUsuarioDto, Usuario, UsuarioDatasource } from "../../../domain";
 import { ListaOrdenada } from "../../../shared";
 
 interface UsuarioDB {
@@ -13,12 +13,14 @@ interface UsuarioDB {
 export class UsuarioDatasourceImplPrisma implements UsuarioDatasource{
 
     usuarioDBToUsuarioEntity(usuarioDB: UsuarioDB){
-        switch (usuarioDB.id_rol){
-            case 1: 
-                const factory = new UsuarioWebFactory().crearUsuario()
-        }
+        return new CreadorDeUsuarios().crearUsuario({
+            id: usuarioDB.id,
+            nombre: usuarioDB.nombre,
+            apellidos: usuarioDB.apellidos,
+            activo: usuarioDB.activo,
+            idRol: usuarioDB.id_rol
+        })
     }
-
 
     async insertarUsuario(registrarUsuarioDto: RegistrarUsuarioDto): Promise<Usuario> {
         try {
@@ -31,22 +33,77 @@ export class UsuarioDatasourceImplPrisma implements UsuarioDatasource{
                     activo: registrarUsuarioDto.activo
                 }
             })
+            return this.usuarioDBToUsuarioEntity(usuarioDB)
         } catch (error) {
-            
+           throw CustomError.internalServer('Error al crear al usuario') 
         }
-        throw new Error("Method not implemented.");
     }
-    obtenerUsuarios(inicio: number, filas: number): Promise<ListaOrdenada<Usuario>> {
-        throw new Error("Method not implemented.");
+
+    async obtenerUsuarios(inicio: number, filas: number): Promise<ListaOrdenada<Usuario>> {
+        try {
+            const prisma = PrismaAdapter.crearConexion()
+            const usuariosDB = await prisma.usuario.findMany({
+                skip: inicio,
+                take: filas
+            })
+            return {
+                lista: usuariosDB.map(usuarioDB => this.usuarioDBToUsuarioEntity(usuarioDB)),
+                cantidad: await prisma.usuario.count()
+            }
+        } catch (error) {
+            throw CustomError.internalServer('Error al obtener a los usuarios') 
+        }
     }
-    obtenerUsuario(idUsuario: number): Promise<Usuario> {
-        throw new Error("Method not implemented.");
+
+    async obtenerUsuario(idUsuario: number): Promise<Usuario> {
+        try {
+            const prisma = PrismaAdapter.crearConexion()
+            const usuarioDB = await prisma.usuario.findFirst({
+                where: {
+                    id: idUsuario
+                }
+            })
+            if( !usuarioDB ) throw CustomError.notFound("No existe el usuario")
+            return this.usuarioDBToUsuarioEntity(usuarioDB)
+        } catch (error) {
+            throw CustomError.internalServer('Error al obtener al usuario')
+        }
     }
-    actualizarUsuario(idUsuario: number, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario> {
-        throw new Error("Method not implemented.");
+
+    async actualizarUsuario(idUsuario: number, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario> {
+        try {
+            this.obtenerUsuario(idUsuario)
+            const prisma = PrismaAdapter.crearConexion()
+            const usuarioFiltrado = filtradorDeObjetos.filtrarDto(actualizarUsuarioDto)
+            const usuarioDB = await prisma.usuario.update({
+                data: usuarioFiltrado,
+                where: {
+                    id: idUsuario
+                }
+            })
+            return this.usuarioDBToUsuarioEntity(usuarioDB)
+        } catch (error) {
+            throw CustomError.internalServer('Error al actualizar al usuario')
+        }
+        
     }
-    eliminarUsuario(idUsuario: number): Promise<boolean> {
-        throw new Error("Method not implemented.");
+
+    async eliminarUsuario(idUsuario: number): Promise<boolean> {
+        try {
+            this.obtenerUsuario(idUsuario)
+            const prisma = PrismaAdapter.crearConexion()
+            await prisma.usuario.update({
+                data: {
+                    activo: false
+                },
+                where: {
+                    id: idUsuario
+                }
+            })
+            return true
+        } catch (error) {
+            throw CustomError.internalServer('Error al desactivar al usuario')
+        }
     }
 
 }
