@@ -15,7 +15,7 @@ export class RegistrarUsuarioDto{
 
         if( !nombre ) return ['El nombre es requerido', undefined] 
         if( !apellidos ) return ['Los apellidos son necesarios', undefined] 
-        if( idRol ) return ['El rol para este usuario es requerido', undefined]
+        if( !idRol ) return ['El rol para este usuario es requerido', undefined]
         
         return [undefined, new RegistrarUsuarioDto(
             nombre,
