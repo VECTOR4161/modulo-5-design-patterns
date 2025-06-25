@@ -17,7 +17,7 @@ export class ActualizarUsuarioDto{
         if( nombre && typeof nombre !== 'string') return ['El nombre tiene el formato incorrecto', undefined]
         if( apellidos && typeof apellidos !== 'string') return ['Los apellidos tienen el formato incorrecto', undefined]
         if( idRol && typeof idRol !== 'number') return ['El identificador del rol tiene un formato equivocado', undefined]
-        if( activo != null && typeof activo === 'boolean' ) return ['formato incorrecto de estado', undefined]
+        if( activo != null && typeof activo !== 'boolean' ) return ['formato incorrecto de estado', undefined]
         
         return [undefined, new ActualizarUsuarioDto(
             nombre,
