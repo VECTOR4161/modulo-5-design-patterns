@@ -8,9 +8,9 @@ export abstract class UsuarioDatasource{
 
     abstract obtenerUsuarios(inicio: number, filas: number): Promise<ListaOrdenada<Usuario>>
 
-    abstract obtenerUsuario(id: number): Promise<Usuario> 
+    abstract obtenerUsuario(idUsuario: number): Promise<Usuario> 
 
-    abstract actualizarUsuario(id: number, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario>
+    abstract actualizarUsuario(idUsuario: number, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario>
 
-    abstract eliminarUsuario(id: number): Promise<boolean>
+    abstract eliminarUsuario(idUsuario: number): Promise<boolean>
 }

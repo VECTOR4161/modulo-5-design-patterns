@@ -1,0 +1,1 @@
+export * from './usuarios/usuario.datasource.impl.prisma'
