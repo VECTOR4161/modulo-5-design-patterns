@@ -1,7 +1,7 @@
+import { RegistrarUsuarioDto } from "../../dtos"
+import { Usuario } from "../../entities"
+import { UsuarioRepository } from "../../repositories"
 
-import { RegistrarUsuarioDto } from "../dtos";
-import { Usuario } from "../entities";
-import { UsuarioRepository } from "../repositories";
 
 interface CrearUsuarioUseCase{
     execute(registrarUsuarioDto: RegistrarUsuarioDto): Promise<Usuario>

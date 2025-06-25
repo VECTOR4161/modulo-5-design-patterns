@@ -1,4 +1,5 @@
-import { UsuarioRepository } from "../repositories";
+import { UsuarioRepository } from "../../repositories"
+
 
 interface EliminarUsuarioUseCase{
     execute(idUsuario: number): Promise<boolean>

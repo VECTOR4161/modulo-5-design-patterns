@@ -1,6 +1,7 @@
-import { ActualizarUsuarioDto } from "../dtos";
-import { Usuario } from "../entities";
-import { UsuarioRepository } from "../repositories";
+import { ActualizarUsuarioDto } from "../../dtos"
+import { Usuario } from "../../entities"
+import { UsuarioRepository } from "../../repositories"
+
 
 interface ActualizarUsuarioUseCase{
     execute(idUsuario: number, actualizarUsuarioDto: ActualizarUsuarioDto): Promise<Usuario>

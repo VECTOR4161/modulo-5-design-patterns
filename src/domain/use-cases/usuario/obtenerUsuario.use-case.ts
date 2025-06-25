@@ -1,5 +1,6 @@
-import { Usuario } from "../entities";
-import { UsuarioRepository } from "../repositories";
+import { Usuario } from "../../entities"
+import { UsuarioRepository } from "../../repositories"
+
 
 interface ObtenerUsuarioUseCase{
     execute(idUsuario: number): Promise<Usuario>
