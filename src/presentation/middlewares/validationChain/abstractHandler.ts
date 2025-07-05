@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import { Handler } from ".";
 
 export abstract class AbstractHandler implements Handler {
@@ -8,9 +9,9 @@ export abstract class AbstractHandler implements Handler {
         return handler;
     }
 
-    public handle(request: any): void {
+    public handle(request: Request, response: Response): void {
         if (this.nextHandler) {
-            this.nextHandler.handle(request);
+            this.nextHandler.handle(request, response);
         }
     }
 }
